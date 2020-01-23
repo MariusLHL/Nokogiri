@@ -3,6 +3,10 @@ require 'nokogiri'
 require 'open-uri'
 PAGE_URL = 'https://www.annuaire-des-mairies.com/val-d-oise.html'
 
+
+
+def townhall
+begin
 result, url_list = [], []
 hash = Hash.new
 
@@ -18,12 +22,19 @@ page.xpath('//td/p/a/@href').each do |url|
    url_list << "https://www.annuaire-des-mairies.com".concat(url.text.delete_prefix('.'))
 end
 
-start = Time.now
 url_list.each do |town|
   puts email = get_townhall_email(town)
   result << email
 end
-stop = Time.now
 
-puts result.to_s
-#puts("Fonction executer en #{stop -= start} seconde")
+rescue OpenURI::HTTPError => e
+  if e.message == '404 Not Found'
+    puts  e.message
+  else
+    raise e
+  end
+  end
+  return result
+  end
+
+  puts townhall
