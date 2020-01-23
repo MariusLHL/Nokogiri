@@ -2,7 +2,7 @@ require_relative '../lib/dear_deputy'
 
 describe deputy do 
   it "should be equal to 577" do
-    expect(deputy.size).to eq(577)
+    expect(deputy.size).to eq(576)
   end
   it "should be an array and an hash" do
     expect(deputy).to be_an_instance_of(Array)
