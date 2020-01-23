@@ -1,7 +1,7 @@
 require_relative '../lib/dear_deputy'
 
 describe deputy do 
-  it "should be equal to 577" do
+  it "should be equal to 576" do
     expect(deputy.size).to eq(576)
   end
   it "should be an array and an hash" do
