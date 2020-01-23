@@ -1,40 +1,46 @@
 require 'rubygems'
 require 'nokogiri'
 require 'open-uri'
+PAGE_URL = 'http://www2.assemblee-nationale.fr/deputes/liste/alphabetique'
 
-array = []
-return_array = []
-email_array = []
+page = Nokogiri::HTML(open(PAGE_URL))
+
+url_array = []
 first_name = []
 last_name = []
+mail_array = []
+final_array = []
+i = 0
 
-page = Nokogiri::HTML(open("https://www.voxpublic.org/spip.php?page=annuaire&cat=deputes&pagnum=576&lang=fr&debut_deputes=550#pagination_deputes"))
-
-def filter(mail)
-  (mail.include?("@assemblee-nationale.fr")) ? (return mail) : nil
-end
-
-page.xpath("//li[5]/a[1]").each do |mail|
-    email_array << mail.text
-end
-
-page.xpath("//li[1]/h2").each do |mot|
-  array = mot.text.split(" ")
+page.xpath("//div[3]/div/ul/li/a").each do |name|
+  array = name.text.split(" ")
   array.delete_at(0)
-  first_name << array[0] 
-  last_name << array[1]
+  if array.size > 2
+    first_name << array[0]
+    last_name << array[1.. array.size].join('-')
+  else
+    first_name << array[0]
+    last_name << array[1]
+  end
 end
 
-combined_array = first_name.zip(last_name, email_array)
-
-combined_array.each do |l|
+page.xpath("//div[3]/div/ul/li/a/@href").each do |href|
+  url_array << href
+end
+puts "Recup mail"
+url_array.each do |html|
+  page = Nokogiri::HTML(open("http://www2.assemblee-nationale.fr/".concat(html)))
+  mail = page.xpath("//a[starts-with(@href, 'mailto')]/text()")[1].text
+  mail_array << mail
+  puts mail
+end
+puts i
+while i < first_name.size
+  puts i
   hash = Hash.new
-  hash ={ 
-    "first_name" => l[0],
-    "last_name" => l[1],
-    "email" => l[2]
-    }
-    return_array << hash
+  hash = {"first_name" => first_name[i], "last_name" => last_name[i], "email" => mail_array[i]}
+  final_array << hash.to_s
+  i += 1
 end
 
-puts return_array.to_s
+puts final_array.to_s

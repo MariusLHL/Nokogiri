@@ -26,4 +26,4 @@ end
 stop = Time.now
 
 puts result.to_s
-puts("Fonction executer en #{stop -= start} seconde")
+#puts("Fonction executer en #{stop -= start} seconde")

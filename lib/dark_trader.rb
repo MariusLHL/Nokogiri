@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'nokogiri'
 require 'open-uri'
+require 'mechanize'
 PAGE_URL = 'https://coinmarketcap.com/all/views/all/'
 
 def coinmarket
@@ -8,6 +9,7 @@ begin
 page  = Nokogiri::HTML(open(PAGE_URL))
 name , value , array = [], [], []
 hash = Hash.new
+
 
 puts "Getting all value"
 page.xpath('//tr/td[5]/a').each do |w|
